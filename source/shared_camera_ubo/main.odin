@@ -29,6 +29,9 @@ CUBE_VERTEX_SOURCE :: `#version 460 core
     layout(std140, binding = 0) uniform Camera {
         mat4 projection;
         mat4 view;
+        vec3 view_pos;
+        vec3 light_dir;
+        float ambient;
     };
 
     uniform mat4 u_model;
@@ -47,8 +50,13 @@ CUBE_FRAGMENT_SOURCE :: `#version 460 core
     in vec3 v_world_pos;
     out vec4 o_frag_color;
 
-    uniform vec3 u_light_dir;
-    uniform vec3 u_view_pos;
+    layout(std140, binding = 0) uniform Camera {
+        mat4 projection;
+        mat4 view;
+        vec3 view_pos;
+        vec3 light_dir;
+        float ambient;
+    };
 
     const float SHININESS = 64.0;
 
@@ -56,11 +64,10 @@ CUBE_FRAGMENT_SOURCE :: `#version 460 core
         vec3 color = vec3(1.0, 0.5, 0.1);
         vec3 normal = normalize(v_normal);
 
-        float ambient = 0.2;
-        float diffuse = max(dot(normal, u_light_dir), 0.0);
+        float diffuse = max(dot(normal, light_dir), 0.0);
 
-        vec3 view_dir  = normalize(u_view_pos - v_world_pos);
-        vec3 half_dir  = normalize(u_light_dir + view_dir);
+        vec3 view_dir  = normalize(view_pos - v_world_pos);
+        vec3 half_dir  = normalize(light_dir + view_dir);
         float specular = pow(max(dot(normal, half_dir), 0.0), SHININESS) * 0.5;
 
         o_frag_color = vec4(color * (ambient + diffuse) + specular, 1.0);
@@ -79,6 +86,9 @@ SPHERES_VERTEX_SOURCE :: `#version 460 core
     layout(std140, binding = 0) uniform Camera {
         mat4 projection;
         mat4 view;
+        vec3 view_pos;
+        vec3 light_dir;
+        float ambient;
     };
 
     // Unit cube — sphere of radius r fits inside cube of half-size r,
@@ -121,9 +131,10 @@ SPHERES_FRAGMENT_SOURCE :: `#version 460 core
     layout(std140, binding = 0) uniform Camera {
         mat4 projection;
         mat4 view;
+        vec3 view_pos;
+        vec3 light_dir;
+        float ambient;
     };
-
-    uniform vec3 u_light_dir;
 
     const float SHININESS = 64.0;
 
@@ -151,10 +162,9 @@ SPHERES_FRAGMENT_SOURCE :: `#version 460 core
         vec4 clip_pos = projection * vec4(hit_vs, 1.0);
         gl_FragDepth  = (clip_pos.z / clip_pos.w) * 0.5 + 0.5;
 
-        vec3 light    = normalize(u_light_dir);
+        vec3 light    = normalize(light_dir);
         vec3 half_dir = normalize(light + view_dir);
 
-        float ambient  = 0.2;
         float diffuse  = max(dot(normal, light), 0.0);
         float specular = pow(max(dot(normal, half_dir), 0.0), SHININESS) * 0.5;
 
@@ -164,7 +174,11 @@ SPHERES_FRAGMENT_SOURCE :: `#version 460 core
 
 Camera_UBO :: struct {
     projection: glm.mat4,
-    view:       glm.mat4
+    view:       glm.mat4,
+    view_pos:   glm.vec3,
+    _pad0:      f32,
+    light_dir:  glm.vec3,
+    ambient:    f32,
 }
 
 Sphere :: struct {
@@ -230,7 +244,6 @@ main :: proc() {
 
     // Sphere shader
     spheres_program, spheres_ok := gl.load_shaders_source(SPHERES_VERTEX_SOURCE, SPHERES_FRAGMENT_SOURCE)
-    spheres_uniforms := gl.get_uniforms_from_program(spheres_program)
 
     if !spheres_ok {
         fmt.printf("SPHERE SHADER LOAD ERROR: %s\n", gl.get_last_error_message())
@@ -384,7 +397,13 @@ main :: proc() {
         compute_camera_view(&camera)
 
         // Upload once — both programs read from the same UBO
-        camera_data := Camera_UBO{camera.projection, camera.view}
+        camera_data := Camera_UBO{
+            projection = camera.projection,
+            view       = camera.view,
+            view_pos   = camera.position,
+            light_dir  = light_dir,
+            ambient    = 0.2,
+        }
         gl.BindBuffer(gl.UNIFORM_BUFFER, ubo)
         gl.BufferSubData(gl.UNIFORM_BUFFER, 0, size_of(Camera_UBO), &camera_data)
 
@@ -395,15 +414,12 @@ main :: proc() {
         // Render cube
         gl.UseProgram(cube_program)
         gl.UniformMatrix4fv(cube_uniforms["u_model"].location, 1, false, &cube_model[0][0])
-        gl.Uniform3f(cube_uniforms["u_light_dir"].location, light_dir.x, light_dir.y, light_dir.z)
-        gl.Uniform3f(cube_uniforms["u_view_pos"].location, camera.position.x, camera.position.y, camera.position.z)
         gl.BindVertexArray(cube_vao)
         gl.DrawElements(gl.TRIANGLES, i32(cube_index_count), gl.UNSIGNED_SHORT, nil)
 
         // Render spheres
         gl.Disable(gl.CULL_FACE)
         gl.UseProgram(spheres_program)
-        gl.Uniform3f(spheres_uniforms["u_light_dir"].location, light_dir.x, light_dir.y, light_dir.z)
         gl.BindVertexArray(spheres_vao)
         gl.DrawArraysInstanced(gl.TRIANGLE_STRIP, 0, 14, SPHERE_CAP)
         gl.Enable(gl.CULL_FACE)
