@@ -94,7 +94,7 @@ main :: proc() {
     vao: u32; gl.GenVertexArrays(1, &vao); defer gl.DeleteVertexArrays(1, &vao)
     gl.BindVertexArray(vao)
 
-    // Create buffer for vertices
+    // Create vertex buffer for vertices
     vbo: u32; gl.GenBuffers(1, &vbo); defer gl.DeleteBuffers(1, &vbo)
     gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
     gl.BufferData(gl.ARRAY_BUFFER, vertex_count * size_of(Vertex), &vertices[0], gl.STATIC_DRAW)
