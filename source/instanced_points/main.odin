@@ -17,7 +17,7 @@ VERTEX_SOURCE :: `#version 460 core
     layout(location = 1) in float i_radius;
     layout(location = 2) in int i_color;
     flat out float v_radius;
-    flat out int v_color;
+    out vec4 v_color;
     out vec2 v_tex_coord;
     uniform mat4 u_projection;
 
@@ -35,21 +35,6 @@ VERTEX_SOURCE :: `#version 460 core
         vec2(1.0, 1.0)
     );
 
-    void main() {
-        vec2 position = positions[gl_VertexID] * i_radius + i_position;
-
-        gl_Position = u_projection * vec4(position, 0.0, 1.0);
-        v_radius = i_radius;
-        v_color = i_color;
-        v_tex_coord = tex_coords[gl_VertexID];
-    }
-`
-
-FRAGMENT_SOURCE :: `#version 460 core
-    flat in int v_color;
-    in vec2 v_tex_coord;
-    out vec4 o_frag_color;
-
     vec3 get_color(int color) {
         return vec3(
             (color >> 16) & 0xFF,
@@ -59,13 +44,29 @@ FRAGMENT_SOURCE :: `#version 460 core
     }
 
     void main() {
+        vec2 position = positions[gl_VertexID] * i_radius + i_position;
+
+        gl_Position = u_projection * vec4(position, 0.0, 1.0);
+        v_radius = i_radius;
+        v_color = vec4(get_color(i_color), 1.0);
+        v_tex_coord = tex_coords[gl_VertexID];
+    }
+`
+
+FRAGMENT_SOURCE :: `#version 460 core
+    flat in float v_radius;
+    in vec4 v_color;
+    in vec2 v_tex_coord;
+    out vec4 o_frag_color;
+
+    void main() {
         vec2 uv = v_tex_coord;
         vec2 cp = uv * 2.0 - 1.0;
 
         float d = length(cp);
         float alpha = 1.0 - smoothstep(0.9, 1.0, d);
 
-        o_frag_color = vec4(get_color(v_color), alpha);
+        o_frag_color = vec4(v_color.rgb, alpha);
     }
 `
 
