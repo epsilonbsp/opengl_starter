@@ -418,11 +418,9 @@ main :: proc() {
         gl.DrawElements(gl.TRIANGLES, i32(cube_index_count), gl.UNSIGNED_SHORT, nil)
 
         // Render spheres
-        gl.Disable(gl.CULL_FACE)
         gl.UseProgram(spheres_program)
         gl.BindVertexArray(spheres_vao)
         gl.DrawArraysInstanced(gl.TRIANGLE_STRIP, 0, 14, SPHERE_CAP)
-        gl.Enable(gl.CULL_FACE)
 
         sdl.GL_SwapWindow(window)
     }
