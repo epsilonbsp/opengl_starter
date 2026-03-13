@@ -36,3 +36,4 @@ import example "default_window"
 | `quad_in_buffer` | Colored quad drawn using vertex data uploaded to a VBO |
 | `quad_in_buffer_indexed` | Colored quad drawn using a VBO and an index buffer (EBO) with `glDrawElements` |
 | `quad_with_texture` | Textured quad using a PNG loaded at compile time, mixed with vertex color |
+| `instanced_points` | 1024 circles drawn in a single draw call using instanced rendering with per-instance position, radius, and color |
