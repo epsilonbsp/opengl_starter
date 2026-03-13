@@ -2,7 +2,7 @@
 
 Simple OpenGL examples in Odin to get started with, using SDL3 for windowing.
 
-Based on [Odin SDL3 Template](https://github.com/epsilonbsp/odin_sdl3_template) — check that repo if you need help setting up Odin or SDL3.
+Based on [Odin SDL3 Template](https://github.com/epsilonbsp/odin_sdl3_template) - check that repo if you need help setting up Odin or SDL3.
 
 ## Setup
 

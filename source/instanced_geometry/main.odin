@@ -155,7 +155,7 @@ main :: proc() {
     vao: u32; gl.GenVertexArrays(1, &vao); defer gl.DeleteVertexArrays(1, &vao)
     gl.BindVertexArray(vao)
 
-    // Geometry VBO — per-vertex, divisor 0 (default)
+    // Geometry VBO - per-vertex, divisor 0 (default)
     geo_vbo: u32; gl.GenBuffers(1, &geo_vbo); defer gl.DeleteBuffers(1, &geo_vbo)
     gl.BindBuffer(gl.ARRAY_BUFFER, geo_vbo)
     gl.BufferData(gl.ARRAY_BUFFER, size_of(vertices), &vertices, gl.STATIC_DRAW)
@@ -168,7 +168,7 @@ main :: proc() {
     gl.EnableVertexAttribArray(1)
     gl.VertexAttribPointer(1, 2, gl.FLOAT, gl.FALSE, size_of(Vertex), auto_cast geo_offset)
 
-    // Instance VBO — per-instance, divisor 1
+    // Instance VBO - per-instance, divisor 1
     inst_vbo: u32; gl.GenBuffers(1, &inst_vbo); defer gl.DeleteBuffers(1, &inst_vbo)
     gl.BindBuffer(gl.ARRAY_BUFFER, inst_vbo)
     gl.BufferData(gl.ARRAY_BUFFER, size_of(instances), &instances, gl.STATIC_DRAW)

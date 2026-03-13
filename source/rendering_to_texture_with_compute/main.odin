@@ -152,7 +152,7 @@ main :: proc() {
     vao: u32; gl.GenVertexArrays(1, &vao); defer gl.DeleteVertexArrays(1, &vao)
     gl.BindVertexArray(vao)
 
-    // Texture the compute shader writes into — must use sized internal format (RGBA8) for image units
+    // Texture the compute shader writes into - must use sized internal format (RGBA8) for image units
     texture: u32; gl.GenTextures(1, &texture); defer gl.DeleteTextures(1, &texture)
     gl.BindTexture(gl.TEXTURE_2D, texture)
     gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, gl.RGBA, gl.UNSIGNED_BYTE, nil)

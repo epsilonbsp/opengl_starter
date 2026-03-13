@@ -143,7 +143,7 @@ main :: proc() {
     image_width  := i32(image.width)
     image_height := i32(image.height)
 
-    // Input texture — loaded from image, read-only in compute
+    // Input texture - loaded from image, read-only in compute
     input_texture: u32; gl.GenTextures(1, &input_texture); defer gl.DeleteTextures(1, &input_texture)
     gl.BindTexture(gl.TEXTURE_2D, input_texture)
     gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, image_width, image_height, 0, gl.RGBA, gl.UNSIGNED_BYTE, &image.pixels.buf[0])
@@ -152,7 +152,7 @@ main :: proc() {
     gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
     gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
-    // Output texture — same size, compute writes processed result here
+    // Output texture - same size, compute writes processed result here
     output_texture: u32; gl.GenTextures(1, &output_texture); defer gl.DeleteTextures(1, &output_texture)
     gl.BindTexture(gl.TEXTURE_2D, output_texture)
     gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, image_width, image_height, 0, gl.RGBA, gl.UNSIGNED_BYTE, nil)
@@ -161,7 +161,7 @@ main :: proc() {
     gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
     gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
-    // Dispatch once — input is static, no need to re-run every frame
+    // Dispatch once - input is static, no need to re-run every frame
     gl.UseProgram(compute_program)
     gl.BindImageTexture(0, input_texture,  0, false, 0, gl.READ_ONLY,  gl.RGBA8)
     gl.BindImageTexture(1, output_texture, 0, false, 0, gl.WRITE_ONLY, gl.RGBA8)
