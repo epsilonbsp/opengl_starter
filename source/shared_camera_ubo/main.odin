@@ -6,7 +6,7 @@ import glm "core:math/linalg/glsl"
 import sdl "vendor:sdl3"
 import gl "vendor:OpenGL"
 
-WINDOW_TITLE :: "Shared Camera Uniform"
+WINDOW_TITLE :: "Shared Camera UBO"
 WINDOW_WIDTH :: 960
 WINDOW_HEIGHT :: 540
 GL_VERSION_MAJOR :: 4

@@ -5,7 +5,7 @@ import glm "core:math/linalg/glsl"
 import sdl "vendor:sdl3"
 import gl "vendor:OpenGL"
 
-WINDOW_TITLE :: "Camera In 3D"
+WINDOW_TITLE :: "Camera And Camera"
 WINDOW_WIDTH :: 960
 WINDOW_HEIGHT :: 540
 GL_VERSION_MAJOR :: 4

@@ -44,5 +44,5 @@ import example "default_window"
 | `image_postprocessing` | Sobel edge detection applied to a brick texture using a compute shader kernel, displayed side-by-side with the original |
 | `geometry_shader` | A single `GL_POINT` expanded into a rotating 5-pointed star by a geometry shader |
 | `particles_with_ssbo` | 1024 particles simulated on the GPU using a compute shader writing to an SSBO, then rendered as instanced circles |
-| `camera_in_3d` | A cube rendered in 3D with with basic lighting, and a free-look camera controlled by mouse and WASD |
-| `shared_camera_uniform` | A lit cube and 1024 shaded sphere impostors rendered in a shared 3D scene using a UBO to supply camera matrices to both programs |
+| `cube_and_camera` | A cube rendered in 3D with with basic lighting, and a free-look camera controlled by mouse and WASD |
+| `shared_camera_ubo` | A lit cube and 1024 shaded sphere impostors rendered in a shared 3D scene using a UBO to supply camera matrices to both programs |
