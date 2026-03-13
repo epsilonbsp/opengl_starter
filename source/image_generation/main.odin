@@ -20,11 +20,14 @@ VERTEX_SOURCE :: `#version 460 core
     out vec2 v_tex_coord;
     uniform mat4 u_projection;
 
+    const vec2 quad_size = vec2(512.0);
+    const vec2 half_size = quad_size / 2.0;
+
     const vec2 positions[] = vec2[](
-        vec2(-256.0, -256.0),
-        vec2(256.0, -256.0),
-        vec2(-256.0, 256.0),
-        vec2(256.0, 256.0)
+        vec2(-half_size.x, -half_size.y),
+        vec2( half_size.x, -half_size.y),
+        vec2(-half_size.x,  half_size.y),
+        vec2( half_size.x,  half_size.y)
     );
 
     // Bottom left origin
