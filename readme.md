@@ -43,3 +43,4 @@ import example "default_window"
 | `rendering_to_texture_with_compute` | Heart SDF written directly to a texture using a compute shader via `imageStore`, then displayed on a centered quad |
 | `image_postprocessing` | Sobel edge detection applied to a brick texture using a compute shader kernel, displayed side-by-side with the original |
 | `geometry_shader` | A single `GL_POINT` expanded into a rotating 5-pointed star by a geometry shader |
+| `particles_with_ssbo` | 1024 particles simulated on the GPU using a compute shader writing to an SSBO, then rendered as instanced circles |
