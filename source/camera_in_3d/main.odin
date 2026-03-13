@@ -55,7 +55,7 @@ FRAGMENT_SOURCE :: `#version 460 core
 `
 
 // 24 vertices (4 per face, 6 faces) with per-face normals
-cube_vertices := [24][2]glm.vec3 {
+cube_vertices := [][2]glm.vec3 {
     // left
     {{-0.5, -0.5, -0.5}, {-1, 0, 0}},
     {{-0.5, -0.5,  0.5}, {-1, 0, 0}},
@@ -85,10 +85,10 @@ cube_vertices := [24][2]glm.vec3 {
     {{-0.5, -0.5,  0.5}, {0, 0,  1}},
     {{ 0.5, -0.5,  0.5}, {0, 0,  1}},
     {{ 0.5,  0.5,  0.5}, {0, 0,  1}},
-    {{-0.5,  0.5,  0.5}, {0, 0,  1}},
+    {{-0.5,  0.5,  0.5}, {0, 0,  1}}
 }
 
-cube_indices := [36]u16 {
+cube_indices := []u16 {
      0,  1,  2,   0,  2,  3,
      4,  5,  6,   4,  6,  7,
      8,  9, 10,   8, 10, 11,
@@ -96,6 +96,8 @@ cube_indices := [36]u16 {
     16, 17, 18,  16, 18, 19,
     20, 21, 22,  20, 22, 23
 }
+
+index_count := len(cube_indices)
 
 main :: proc() {
     if !sdl.Init({.VIDEO}) {
@@ -149,7 +151,7 @@ main :: proc() {
 
     vbo: u32; gl.GenBuffers(1, &vbo); defer gl.DeleteBuffers(1, &vbo)
     gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
-    gl.BufferData(gl.ARRAY_BUFFER, size_of(cube_vertices), &cube_vertices, gl.STATIC_DRAW)
+    gl.BufferData(gl.ARRAY_BUFFER, len(cube_vertices) * size_of(cube_vertices[0]), &cube_vertices[0], gl.STATIC_DRAW)
 
     offset: f32 = 0
     gl.EnableVertexAttribArray(0)
@@ -161,7 +163,7 @@ main :: proc() {
 
     ibo: u32; gl.GenBuffers(1, &ibo); defer gl.DeleteBuffers(1, &ibo)
     gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo)
-    gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, size_of(cube_indices), &cube_indices, gl.STATIC_DRAW)
+    gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(cube_indices) * size_of(cube_indices[0]), &cube_indices[0], gl.STATIC_DRAW)
 
     light_dir := glm.normalize(glm.vec3{1, 2, 3})
 
@@ -229,7 +231,7 @@ main :: proc() {
         gl.Uniform3f(uniforms["u_light_dir"].location, light_dir.x, light_dir.y, light_dir.z)
         gl.Uniform3f(uniforms["u_view_pos"].location, camera.position.x, camera.position.y, camera.position.z)
         gl.BindVertexArray(vao)
-        gl.DrawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, nil)
+        gl.DrawElements(gl.TRIANGLES, i32(index_count), gl.UNSIGNED_SHORT, nil)
 
         sdl.GL_SwapWindow(window)
     }
