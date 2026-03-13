@@ -5,7 +5,7 @@ import glm "core:math/linalg/glsl"
 import sdl "vendor:sdl3"
 import gl "vendor:OpenGL"
 
-WINDOW_TITLE :: "Rendering To Texture"
+WINDOW_TITLE :: "Rendering To Texture With Fragment"
 WINDOW_WIDTH :: 960
 WINDOW_HEIGHT :: 540
 GL_VERSION_MAJOR :: 4
