@@ -23,7 +23,7 @@ Run the current example:
 To switch examples, edit [source/main.odin](source/main.odin) and change the import to point to a different example package:
 
 ```odin
-// change import to run different examples
+// Change import to run different examples
 import example "default_window"
 ```
 
