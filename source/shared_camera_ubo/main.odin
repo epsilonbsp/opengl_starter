@@ -14,11 +14,11 @@ GL_VERSION_MINOR :: 6
 
 CAMERA_UBO_BINDING :: 0
 
-POINT_CAP :: 1024
-POINT_POS_MIN : f32 : -256
-POINT_POS_MAX : f32 : 256
-POINT_RADIUS_MIN : f32 : 0.5
-POINT_RADIUS_MAX : f32 : 8
+SPHERE_CAP :: 2048
+SPHERE_POS_MIN : f32 : -512
+SPHERE_POS_MAX : f32 : 512
+SPHERE_RADIUS_MIN : f32 : 2
+SPHERE_RADIUS_MAX : f32 : 16
 
 CUBE_VERTEX_SOURCE :: `#version 460 core
     layout(location = 0) in vec3 i_position;
@@ -67,7 +67,7 @@ CUBE_FRAGMENT_SOURCE :: `#version 460 core
     }
 `
 
-POINTS_VERTEX_SOURCE :: `#version 460 core
+SPHERES_VERTEX_SOURCE :: `#version 460 core
     layout(location = 0) in vec3 i_position;
     layout(location = 1) in float i_radius;
     layout(location = 2) in int i_color;
@@ -83,19 +83,12 @@ POINTS_VERTEX_SOURCE :: `#version 460 core
 
     // Unit cube — sphere of radius r fits inside cube of half-size r,
     // so the projected cube always covers the sphere silhouette from any angle
-    const vec3 cube[36] = vec3[](
-        vec3( 1,-1,-1), vec3( 1, 1,-1), vec3( 1, 1, 1),
-        vec3( 1,-1,-1), vec3( 1, 1, 1), vec3( 1,-1, 1),
-        vec3(-1,-1, 1), vec3(-1, 1, 1), vec3(-1, 1,-1),
-        vec3(-1,-1, 1), vec3(-1, 1,-1), vec3(-1,-1,-1),
-        vec3(-1, 1, 1), vec3( 1, 1, 1), vec3( 1, 1,-1),
-        vec3(-1, 1, 1), vec3( 1, 1,-1), vec3(-1, 1,-1),
-        vec3(-1,-1,-1), vec3( 1,-1,-1), vec3( 1,-1, 1),
-        vec3(-1,-1,-1), vec3( 1,-1, 1), vec3(-1,-1, 1),
-        vec3(-1,-1, 1), vec3( 1,-1, 1), vec3( 1, 1, 1),
-        vec3(-1,-1, 1), vec3( 1, 1, 1), vec3(-1, 1, 1),
-        vec3( 1,-1,-1), vec3(-1,-1,-1), vec3(-1, 1,-1),
-        vec3( 1,-1,-1), vec3(-1, 1,-1), vec3( 1, 1,-1)
+    const vec3 cube[14] = vec3[](
+        vec3(-1, 1,-1), vec3( 1, 1,-1), vec3(-1,-1,-1), vec3( 1,-1,-1),
+        vec3( 1,-1, 1), vec3( 1, 1,-1), vec3( 1, 1, 1),
+        vec3(-1, 1,-1), vec3(-1, 1, 1),
+        vec3(-1,-1,-1), vec3(-1,-1, 1),
+        vec3( 1,-1, 1), vec3(-1, 1, 1), vec3( 1, 1, 1)
     );
 
     vec3 get_color(int color) {
@@ -118,7 +111,7 @@ POINTS_VERTEX_SOURCE :: `#version 460 core
     }
 `
 
-POINTS_FRAGMENT_SOURCE :: `#version 460 core
+SPHERES_FRAGMENT_SOURCE :: `#version 460 core
     in vec4 v_color;
     in vec3 v_frag_vs;
     flat in vec3 v_center_vs;
@@ -169,52 +162,12 @@ POINTS_FRAGMENT_SOURCE :: `#version 460 core
     }
 `
 
-// 24 vertices (4 per face, 6 faces) with per-face normals
-cube_vertices := [][2]glm.vec3 {
-    // left
-    {{-0.5, -0.5, -0.5}, {-1, 0, 0}},
-    {{-0.5, -0.5,  0.5}, {-1, 0, 0}},
-    {{-0.5,  0.5,  0.5}, {-1, 0, 0}},
-    {{-0.5,  0.5, -0.5}, {-1, 0, 0}},
-    // right
-    {{ 0.5, -0.5,  0.5}, {1, 0, 0}},
-    {{ 0.5, -0.5, -0.5}, {1, 0, 0}},
-    {{ 0.5,  0.5, -0.5}, {1, 0, 0}},
-    {{ 0.5,  0.5,  0.5}, {1, 0, 0}},
-    // bottom
-    {{-0.5, -0.5, -0.5}, {0, -1, 0}},
-    {{ 0.5, -0.5, -0.5}, {0, -1, 0}},
-    {{ 0.5, -0.5,  0.5}, {0, -1, 0}},
-    {{-0.5, -0.5,  0.5}, {0, -1, 0}},
-    // top
-    {{-0.5,  0.5,  0.5}, {0, 1, 0}},
-    {{ 0.5,  0.5,  0.5}, {0, 1, 0}},
-    {{ 0.5,  0.5, -0.5}, {0, 1, 0}},
-    {{-0.5,  0.5, -0.5}, {0, 1, 0}},
-    // back
-    {{ 0.5, -0.5, -0.5}, {0, 0, -1}},
-    {{-0.5, -0.5, -0.5}, {0, 0, -1}},
-    {{-0.5,  0.5, -0.5}, {0, 0, -1}},
-    {{ 0.5,  0.5, -0.5}, {0, 0, -1}},
-    // front
-    {{-0.5, -0.5,  0.5}, {0, 0,  1}},
-    {{ 0.5, -0.5,  0.5}, {0, 0,  1}},
-    {{ 0.5,  0.5,  0.5}, {0, 0,  1}},
-    {{-0.5,  0.5,  0.5}, {0, 0,  1}}
+Camera_UBO :: struct {
+    projection: glm.mat4,
+    view:       glm.mat4
 }
 
-cube_indices := []u16 {
-     0,  1,  2,   0,  2,  3,
-     4,  5,  6,   4,  6,  7,
-     8,  9, 10,   8, 10, 11,
-    12, 13, 14,  12, 14, 15,
-    16, 17, 18,  16, 18, 19,
-    20, 21, 22,  20, 22, 23
-}
-
-index_count := len(cube_indices)
-
-Point :: struct {
+Sphere :: struct {
     position: glm.vec3,
     radius:   f32,
     color:    i32,
@@ -226,11 +179,6 @@ pack_color :: proc(color: glm.ivec3) -> i32 {
 
 random_color :: proc() -> i32 {
     return pack_color({rand.int31() % 256, rand.int31() % 256, rand.int31() % 256})
-}
-
-Camera_UBO :: struct {
-    projection: glm.mat4,
-    view:       glm.mat4
 }
 
 main :: proc() {
@@ -280,23 +228,68 @@ main :: proc() {
 
     defer gl.DeleteProgram(cube_program)
 
-    // Point shader
-    points_program, points_ok := gl.load_shaders_source(POINTS_VERTEX_SOURCE, POINTS_FRAGMENT_SOURCE)
-    points_uniforms := gl.get_uniforms_from_program(points_program)
+    // Sphere shader
+    spheres_program, spheres_ok := gl.load_shaders_source(SPHERES_VERTEX_SOURCE, SPHERES_FRAGMENT_SOURCE)
+    spheres_uniforms := gl.get_uniforms_from_program(spheres_program)
 
-    if !points_ok {
-        fmt.printf("POINT SHADER LOAD ERROR: %s\n", gl.get_last_error_message())
+    if !spheres_ok {
+        fmt.printf("SPHERE SHADER LOAD ERROR: %s\n", gl.get_last_error_message())
 
         return
     }
 
-    defer gl.DeleteProgram(points_program)
+    defer gl.DeleteProgram(spheres_program)
 
     // UBO shared between both programs
     ubo: u32; gl.GenBuffers(1, &ubo); defer gl.DeleteBuffers(1, &ubo)
     gl.BindBuffer(gl.UNIFORM_BUFFER, ubo)
     gl.BufferData(gl.UNIFORM_BUFFER, size_of(Camera_UBO), nil, gl.DYNAMIC_DRAW)
     gl.BindBufferBase(gl.UNIFORM_BUFFER, CAMERA_UBO_BINDING, ubo)
+
+    // Cube data: 24 vertices (4 per face, 6 faces) with per-face normals
+    cube_vertices := [][2]glm.vec3 {
+        // left
+        {{-0.5, -0.5, -0.5}, {-1, 0, 0}},
+        {{-0.5, -0.5,  0.5}, {-1, 0, 0}},
+        {{-0.5,  0.5,  0.5}, {-1, 0, 0}},
+        {{-0.5,  0.5, -0.5}, {-1, 0, 0}},
+        // right
+        {{ 0.5, -0.5,  0.5}, {1, 0, 0}},
+        {{ 0.5, -0.5, -0.5}, {1, 0, 0}},
+        {{ 0.5,  0.5, -0.5}, {1, 0, 0}},
+        {{ 0.5,  0.5,  0.5}, {1, 0, 0}},
+        // bottom
+        {{-0.5, -0.5, -0.5}, {0, -1, 0}},
+        {{ 0.5, -0.5, -0.5}, {0, -1, 0}},
+        {{ 0.5, -0.5,  0.5}, {0, -1, 0}},
+        {{-0.5, -0.5,  0.5}, {0, -1, 0}},
+        // top
+        {{-0.5,  0.5,  0.5}, {0, 1, 0}},
+        {{ 0.5,  0.5,  0.5}, {0, 1, 0}},
+        {{ 0.5,  0.5, -0.5}, {0, 1, 0}},
+        {{-0.5,  0.5, -0.5}, {0, 1, 0}},
+        // back
+        {{ 0.5, -0.5, -0.5}, {0, 0, -1}},
+        {{-0.5, -0.5, -0.5}, {0, 0, -1}},
+        {{-0.5,  0.5, -0.5}, {0, 0, -1}},
+        {{ 0.5,  0.5, -0.5}, {0, 0, -1}},
+        // front
+        {{-0.5, -0.5,  0.5}, {0, 0,  1}},
+        {{ 0.5, -0.5,  0.5}, {0, 0,  1}},
+        {{ 0.5,  0.5,  0.5}, {0, 0,  1}},
+        {{-0.5,  0.5,  0.5}, {0, 0,  1}}
+    }
+
+    cube_indices := []u16 {
+        0,  1,  2,   0,  2,  3,
+        4,  5,  6,   4,  6,  7,
+        8,  9, 10,   8, 10, 11,
+        12, 13, 14,  12, 14, 15,
+        16, 17, 18,  16, 18, 19,
+        20, 21, 22,  20, 22, 23
+    }
+
+    cube_index_count := len(cube_indices)
 
     // Cube VAO
     cube_vao: u32; gl.GenVertexArrays(1, &cube_vao); defer gl.DeleteVertexArrays(1, &cube_vao)
@@ -317,39 +310,40 @@ main :: proc() {
     gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, cube_ibo)
     gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(cube_indices) * size_of(cube_indices[0]), &cube_indices[0], gl.STATIC_DRAW)
 
-    // Point VAO
-    points: [POINT_CAP]Point
+    // Sphere data
+    spheres: [SPHERE_CAP]Sphere
 
-    for &p in points {
-        p.position = {rand.float32_range(POINT_POS_MIN, POINT_POS_MAX), rand.float32_range(POINT_POS_MIN, POINT_POS_MAX), rand.float32_range(POINT_POS_MIN, POINT_POS_MAX)}
-        p.radius = rand.float32_range(POINT_RADIUS_MIN, POINT_RADIUS_MAX)
+    for &p in spheres {
+        p.position = {rand.float32_range(SPHERE_POS_MIN, SPHERE_POS_MAX), rand.float32_range(SPHERE_POS_MIN, SPHERE_POS_MAX), rand.float32_range(SPHERE_POS_MIN, SPHERE_POS_MAX)}
+        p.radius = rand.float32_range(SPHERE_RADIUS_MIN, SPHERE_RADIUS_MAX)
         p.color = random_color()
     }
 
-    points_vao: u32; gl.GenVertexArrays(1, &points_vao); defer gl.DeleteVertexArrays(1, &points_vao)
-    gl.BindVertexArray(points_vao)
+    // Sphere VAO
+    spheres_vao: u32; gl.GenVertexArrays(1, &spheres_vao); defer gl.DeleteVertexArrays(1, &spheres_vao)
+    gl.BindVertexArray(spheres_vao)
 
-    points_vbo: u32; gl.GenBuffers(1, &points_vbo); defer gl.DeleteBuffers(1, &points_vbo)
-    gl.BindBuffer(gl.ARRAY_BUFFER, points_vbo)
-    gl.BufferData(gl.ARRAY_BUFFER, size_of(points), &points, gl.STATIC_DRAW)
+    spheres_vbo: u32; gl.GenBuffers(1, &spheres_vbo); defer gl.DeleteBuffers(1, &spheres_vbo)
+    gl.BindBuffer(gl.ARRAY_BUFFER, spheres_vbo)
+    gl.BufferData(gl.ARRAY_BUFFER, size_of(spheres), &spheres, gl.STATIC_DRAW)
 
     offset: i32 = 0
     gl.EnableVertexAttribArray(0)
-    gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, size_of(Point), auto_cast offset)
+    gl.VertexAttribPointer(0, 3, gl.FLOAT, gl.FALSE, size_of(Sphere), auto_cast offset)
     gl.VertexAttribDivisor(0, 1)
 
     offset += size_of(glm.vec3)
     gl.EnableVertexAttribArray(1)
-    gl.VertexAttribPointer(1, 1, gl.FLOAT, gl.FALSE, size_of(Point), auto_cast offset)
+    gl.VertexAttribPointer(1, 1, gl.FLOAT, gl.FALSE, size_of(Sphere), auto_cast offset)
     gl.VertexAttribDivisor(1, 1)
 
     offset += size_of(f32)
     gl.EnableVertexAttribArray(2)
-    gl.VertexAttribIPointer(2, 1, gl.INT, size_of(Point), auto_cast offset)
+    gl.VertexAttribIPointer(2, 1, gl.INT, size_of(Sphere), auto_cast offset)
     gl.VertexAttribDivisor(2, 1)
 
     light_dir := glm.normalize(glm.vec3{1, 2, 3})
-    cube_model := glm.mat4Scale({16, 16, 16})
+    cube_model := glm.mat4Scale({32, 32, 32})
 
     gl.Enable(gl.DEPTH_TEST)
     gl.Enable(gl.CULL_FACE)
@@ -379,23 +373,11 @@ main :: proc() {
         }
 
         if (sdl.GetWindowRelativeMouseMode(window)) {
-            speed := time_delta * movement_speed
-
-            if key_state[sdl.Scancode.A] {
-                move_camera(&camera, {-speed, 0, 0})
-            }
-
-            if key_state[sdl.Scancode.D] {
-                move_camera(&camera, {speed, 0, 0})
-            }
-
-            if key_state[sdl.Scancode.S] {
-                move_camera(&camera, {0, 0, -speed})
-            }
-
-            if key_state[sdl.Scancode.W] {
-                move_camera(&camera, {0, 0, speed})
-            }
+            fly_camera(
+                &camera,
+                {key_state[sdl.Scancode.A], key_state[sdl.Scancode.D], key_state[sdl.Scancode.S], key_state[sdl.Scancode.W]},
+                time_delta * movement_speed
+            )
         }
 
         compute_camera_projection(&camera, f32(viewport_x) / f32(viewport_y))
@@ -416,14 +398,14 @@ main :: proc() {
         gl.Uniform3f(cube_uniforms["u_light_dir"].location, light_dir.x, light_dir.y, light_dir.z)
         gl.Uniform3f(cube_uniforms["u_view_pos"].location, camera.position.x, camera.position.y, camera.position.z)
         gl.BindVertexArray(cube_vao)
-        gl.DrawElements(gl.TRIANGLES, i32(index_count), gl.UNSIGNED_SHORT, nil)
+        gl.DrawElements(gl.TRIANGLES, i32(cube_index_count), gl.UNSIGNED_SHORT, nil)
 
-        // Render points
+        // Render spheres
         gl.Disable(gl.CULL_FACE)
-        gl.UseProgram(points_program)
-        gl.Uniform3f(points_uniforms["u_light_dir"].location, light_dir.x, light_dir.y, light_dir.z)
-        gl.BindVertexArray(points_vao)
-        gl.DrawArraysInstanced(gl.TRIANGLES, 0, 36, POINT_CAP)
+        gl.UseProgram(spheres_program)
+        gl.Uniform3f(spheres_uniforms["u_light_dir"].location, light_dir.x, light_dir.y, light_dir.z)
+        gl.BindVertexArray(spheres_vao)
+        gl.DrawArraysInstanced(gl.TRIANGLE_STRIP, 0, 14, SPHERE_CAP)
         gl.Enable(gl.CULL_FACE)
 
         sdl.GL_SwapWindow(window)
