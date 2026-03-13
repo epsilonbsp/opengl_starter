@@ -1,6 +1,7 @@
 package example
 
 import "core:fmt"
+import glm "core:math/linalg/glsl"
 import sdl "vendor:sdl3"
 import gl "vendor:OpenGL"
 
@@ -11,16 +12,26 @@ GL_VERSION_MAJOR :: 4
 GL_VERSION_MINOR :: 6
 
 VERTEX_SOURCE :: `#version 460 core
+    out vec2 v_tex_coord;
     out vec4 v_color;
+    uniform mat4 u_projection;
 
-    const vec2 positions[4] = vec2[](
-        vec2(-0.5, -0.5),
-        vec2(0.5, -0.5),
-        vec2(-0.5, 0.5),
-        vec2(0.5, 0.5)
+    const vec2 positions[] = vec2[](
+        vec2(-128.0, -128.0),
+        vec2(128.0, -128.0),
+        vec2(-128.0, 128.0),
+        vec2(128.0, 128.0)
     );
 
-    const vec4 colors[4] = vec4[](
+    // Bottom left origin
+    const vec2 tex_coords[] = vec2[](
+        vec2(0.0, 0.0),
+        vec2(1.0, 0.0),
+        vec2(0.0, 1.0),
+        vec2(1.0, 1.0)
+    );
+
+    const vec4 colors[] = vec4[](
         vec4(0.0, 0.0, 0.0, 1.0),
         vec4(1.0, 0.0, 0.0, 1.0),
         vec4(0.0, 1.0, 0.0, 1.0),
@@ -28,17 +39,22 @@ VERTEX_SOURCE :: `#version 460 core
     );
 
     void main() {
-        gl_Position = vec4(positions[gl_VertexID], 0.0, 1.0);
+        gl_Position = u_projection * vec4(positions[gl_VertexID], 0.0, 1.0);
+        v_tex_coord = tex_coords[gl_VertexID];
         v_color = colors[gl_VertexID];
     }
 `
 
 FRAGMENT_SOURCE :: `#version 460 core
+    in vec2 v_tex_coord;
     in vec4 v_color;
     out vec4 o_frag_color;
 
     void main() {
-        o_frag_color = v_color;
+        vec2 checker = floor(v_tex_coord * 8.0);
+        float pattern = mod(checker.x + checker.y, 2.0);
+
+        o_frag_color = v_color + vec4(vec3(pattern * 0.2), 0.0);
     }
 `
 
@@ -94,11 +110,14 @@ main :: proc() {
             }
         }
 
+        projection := glm.mat4Ortho3d(-f32(viewport_x) / 2, f32(viewport_x) / 2, -f32(viewport_y) / 2, f32(viewport_y) / 2, -1, 1)
+
         gl.Viewport(0, 0, viewport_x, viewport_y)
         gl.ClearColor(0, 0, 0, 1)
         gl.Clear(gl.COLOR_BUFFER_BIT)
 
         gl.UseProgram(program)
+        gl.UniformMatrix4fv(uniforms["u_projection"].location, 1, false, &projection[0][0])
         gl.DrawArrays(gl.TRIANGLE_STRIP, 0, 4)
 
         sdl.GL_SwapWindow(window)
