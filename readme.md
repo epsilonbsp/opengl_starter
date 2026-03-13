@@ -35,3 +35,4 @@ import example "default_window"
 | `quad_in_vertex_shader` | Colored quad drawn using hardcoded positions and colors in the vertex shader |
 | `quad_in_buffer` | Colored quad drawn using vertex data uploaded to a VBO |
 | `quad_in_buffer_indexed` | Colored quad drawn using a VBO and an index buffer (EBO) with `glDrawElements` |
+| `quad_with_texture` | Textured quad using a PNG loaded at compile time, mixed with vertex color |
