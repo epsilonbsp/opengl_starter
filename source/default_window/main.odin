@@ -48,7 +48,7 @@ main :: proc() {
         }
 
         gl.Viewport(0, 0, viewport_x, viewport_y)
-        gl.ClearColor(0.5, 0.5, 0.5, 1.0)
+        gl.ClearColor(0.5, 0.5, 0.5, 1)
         gl.Clear(gl.COLOR_BUFFER_BIT)
 
         sdl.GL_SwapWindow(window)
