@@ -40,3 +40,4 @@ import example "default_window"
 | `instanced_geometry` | 1024 low-poly hearts drawn in a single draw call using instanced rendering with per-instance `mat3x2` transform and packed color |
 | `image_generation` | CPU-generated Voronoi diagram uploaded as a texture and displayed on a quad |
 | `rendering_to_texture_with_fragment` | Heart SDF rendered to an offscreen FBO texture using fragment shader, then displayed on a centered quad |
+| `rendering_to_texture_with_compute` | Heart SDF written directly to a texture using a compute shader via `imageStore`, then displayed on a centered quad |
