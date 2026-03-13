@@ -32,3 +32,4 @@ import example "default_window"
 | Example | Description |
 |---------|-------------|
 | `default_window` | Basic SDL3 + OpenGL 4.6 window with a grey clear color |
+| `quad_in_vertex_shader` | Colored quad drawn using hardcoded positions and colors in the vertex shader |
