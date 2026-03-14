@@ -13,7 +13,7 @@ Camera :: struct {
     far: f32,
     fov: f32,
     projection: glm.mat4,
-    view: glm.mat4
+    view: glm.mat4,
 }
 
 init_camera :: proc(camera: ^Camera) {
@@ -37,12 +37,12 @@ rotate_camera :: proc(camera: ^Camera, yaw: f32, pitch: f32, roll: f32) {
         camera.up = camera.world_up
     }
 
-    // yaw
+    // Yaw
     quat := glm.quatAxisAngle(camera.up, -yaw)
     camera.forward = glm.normalize(glm.quatMulVec3(quat, camera.forward))
     camera.right = glm.normalize(glm.cross(camera.forward, camera.up))
 
-    // pitch
+    // Pitch
     quat = glm.quatAxisAngle(camera.right, -pitch)
     forward := glm.normalize(glm.quatMulVec3(quat, camera.forward))
 
@@ -50,7 +50,7 @@ rotate_camera :: proc(camera: ^Camera, yaw: f32, pitch: f32, roll: f32) {
         camera.forward = forward
     }
 
-    // roll
+    // Roll
     if (!camera.is_locked && roll != 0) {
         quat = glm.quatAxisAngle(camera.forward, -roll)
         camera.right = glm.normalize(glm.quatMulVec3(quat, camera.right))
@@ -94,7 +94,7 @@ Camera_Input :: struct {
     left: bool,
     right: bool,
     backward: bool,
-    forward: bool
+    forward: bool,
 }
 
 fly_camera :: proc(camera: ^Camera, input: Camera_Input, speed: f32) {
