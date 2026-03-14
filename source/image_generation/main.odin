@@ -18,6 +18,7 @@ VORONOI_SEEDS :: 64
 
 VERTEX_SOURCE :: `#version 460 core
     out vec2 v_tex_coord;
+
     uniform mat4 u_projection;
 
     const vec2 quad_size = vec2(512.0);
@@ -46,7 +47,9 @@ VERTEX_SOURCE :: `#version 460 core
 
 FRAGMENT_SOURCE :: `#version 460 core
     in vec2 v_tex_coord;
+
     out vec4 o_frag_color;
+
     uniform sampler2D u_texture;
 
     void main() {
@@ -56,7 +59,7 @@ FRAGMENT_SOURCE :: `#version 460 core
 
 Seed :: struct {
     pos: glm.vec2,
-    color: [3]u8
+    color: [3]u8,
 }
 
 main :: proc() {
@@ -146,10 +149,10 @@ main :: proc() {
 
         for sdl.PollEvent(&event) {
             #partial switch event.type {
-                case .QUIT:
-                    break loop
-                case .WINDOW_RESIZED:
-                    sdl.GetWindowSize(window, &viewport_x, &viewport_y)
+            case .QUIT:
+                break loop
+            case .WINDOW_RESIZED:
+                sdl.GetWindowSize(window, &viewport_x, &viewport_y)
             }
         }
 

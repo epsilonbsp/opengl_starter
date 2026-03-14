@@ -69,14 +69,14 @@ GLB_DATA :: #load("model.glb")
 
 Vertex :: struct {
     position: glm.vec3,
-    normal:   glm.vec3,
-    uv:       glm.vec2,
+    normal: glm.vec3,
+    uv: glm.vec2,
 }
 
 Primitive_GPU :: struct {
     vao, vbo, ibo: u32,
-    texture_id:    u32,
-    index_count:   i32,
+    texture_id: u32,
+    index_count: i32,
 }
 
 Mesh_GPU :: struct {
@@ -84,7 +84,7 @@ Mesh_GPU :: struct {
 }
 
 Model :: struct {
-    mesh:      int,
+    mesh: int,
     transform: glm.mat4,
 }
 
@@ -402,18 +402,18 @@ main :: proc() {
 
         for sdl.PollEvent(&event) {
             #partial switch event.type {
-                case .QUIT:
-                    break loop
-                case .WINDOW_RESIZED:
-                    sdl.GetWindowSize(window, &viewport_x, &viewport_y)
-                case .KEY_DOWN:
-                    if event.key.scancode == sdl.Scancode.ESCAPE {
-                        _ = sdl.SetWindowRelativeMouseMode(window, !sdl.GetWindowRelativeMouseMode(window))
-                    }
-                case .MOUSE_MOTION:
-                    if sdl.GetWindowRelativeMouseMode(window) {
-                        rotate_camera(&camera, event.motion.xrel * yaw_speed, event.motion.yrel * pitch_speed, 0)
-                    }
+            case .QUIT:
+                break loop
+            case .WINDOW_RESIZED:
+                sdl.GetWindowSize(window, &viewport_x, &viewport_y)
+            case .KEY_DOWN:
+                if event.key.scancode == sdl.Scancode.ESCAPE {
+                    _ = sdl.SetWindowRelativeMouseMode(window, !sdl.GetWindowRelativeMouseMode(window))
+                }
+            case .MOUSE_MOTION:
+                if sdl.GetWindowRelativeMouseMode(window) {
+                    rotate_camera(&camera, event.motion.xrel * yaw_speed, event.motion.yrel * pitch_speed, 0)
+                }
             }
         }
 

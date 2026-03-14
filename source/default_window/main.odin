@@ -40,10 +40,10 @@ main :: proc() {
 
         for sdl.PollEvent(&event) {
             #partial switch event.type {
-                case .QUIT:
-                    break loop
-                case .WINDOW_RESIZED:
-                    sdl.GetWindowSize(window, &viewport_x, &viewport_y)
+            case .QUIT:
+                break loop
+            case .WINDOW_RESIZED:
+                sdl.GetWindowSize(window, &viewport_x, &viewport_y)
             }
         }
 

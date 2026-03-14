@@ -23,6 +23,7 @@ VERTEX_SOURCE :: `#version 460 core
 GEOMETRY_SOURCE :: `#version 460 core
     layout(points) in;
     layout(triangle_strip, max_vertices = 30) out;
+
     out vec4 v_color;
 
     uniform mat4 u_projection;
@@ -46,8 +47,8 @@ GEOMETRY_SOURCE :: `#version 460 core
             float t_inner = t_outer + TAU / float(2 * POINT_COUNT);
             float t_outer_next = TAU * float(i + 1) / float(POINT_COUNT) - TAU / 4.0 + u_time;
 
-            vec2 outer = vec2(cos(t_outer),      sin(t_outer))      * OUTER_RADIUS;
-            vec2 inner = vec2(cos(t_inner),      sin(t_inner))      * INNER_RADIUS;
+            vec2 outer = vec2(cos(t_outer), sin(t_outer)) * OUTER_RADIUS;
+            vec2 inner = vec2(cos(t_inner), sin(t_inner)) * INNER_RADIUS;
             vec2 outer_next = vec2(cos(t_outer_next), sin(t_outer_next)) * OUTER_RADIUS;
 
             v_color = vec4(1.0, 0.85, 0.1, 1.0);
@@ -69,6 +70,7 @@ GEOMETRY_SOURCE :: `#version 460 core
 
 FRAGMENT_SOURCE :: `#version 460 core
     in vec4 v_color;
+
     out vec4 o_frag_color;
 
     void main() {
@@ -92,6 +94,7 @@ load_shaders_source :: proc(vs_source, gs_source, fs_source: string, binary_retr
 main :: proc() {
     if !sdl.Init({.VIDEO}) {
         fmt.printf("SDL ERROR: %s\n", sdl.GetError())
+
         return
     }
 
@@ -133,10 +136,10 @@ main :: proc() {
 
         for sdl.PollEvent(&event) {
             #partial switch event.type {
-                case .QUIT:
-                    break loop
-                case .WINDOW_RESIZED:
-                    sdl.GetWindowSize(window, &viewport_x, &viewport_y)
+            case .QUIT:
+                break loop
+            case .WINDOW_RESIZED:
+                sdl.GetWindowSize(window, &viewport_x, &viewport_y)
             }
         }
 

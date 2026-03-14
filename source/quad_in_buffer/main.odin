@@ -15,8 +15,10 @@ VERTEX_SOURCE :: `#version 460 core
     layout(location = 0) in vec2 i_position;
     layout(location = 1) in vec2 i_tex_coord;
     layout(location = 2) in vec4 i_color;
+
     out vec2 v_tex_coord;
     out vec4 v_color;
+
     uniform mat4 u_projection;
 
     void main() {
@@ -29,6 +31,7 @@ VERTEX_SOURCE :: `#version 460 core
 FRAGMENT_SOURCE :: `#version 460 core
     in vec2 v_tex_coord;
     in vec4 v_color;
+
     out vec4 o_frag_color;
 
     void main() {
@@ -42,7 +45,7 @@ FRAGMENT_SOURCE :: `#version 460 core
 Vertex :: struct {
     position: glm.vec2,
     tex_coord: glm.vec2,
-    color: glm.vec4
+    color: glm.vec4,
 }
 
 main :: proc() {
@@ -85,7 +88,7 @@ main :: proc() {
         {{-128, -128}, {0, 0}, {0, 0, 0, 1}},
         {{ 128, -128}, {1, 0}, {1, 0, 0, 1}},
         {{-128,  128}, {0, 1}, {0, 1, 0, 1}},
-        {{ 128,  128}, {1, 1}, {0, 0, 1, 1}}
+        {{ 128,  128}, {1, 1}, {0, 0, 1, 1}},
     }
 
     vertex_count := len(vertices)
@@ -117,10 +120,10 @@ main :: proc() {
 
         for sdl.PollEvent(&event) {
             #partial switch event.type {
-                case .QUIT:
-                    break loop
-                case .WINDOW_RESIZED:
-                    sdl.GetWindowSize(window, &viewport_x, &viewport_y)
+            case .QUIT:
+                break loop
+            case .WINDOW_RESIZED:
+                sdl.GetWindowSize(window, &viewport_x, &viewport_y)
             }
         }
 

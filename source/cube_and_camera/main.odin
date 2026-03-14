@@ -14,8 +14,10 @@ GL_VERSION_MINOR :: 6
 VERTEX_SOURCE :: `#version 460 core
     layout(location = 0) in vec3 i_position;
     layout(location = 1) in vec3 i_normal;
+
     out vec3 v_normal;
     out vec3 v_world_pos;
+
     uniform mat4 u_projection;
     uniform mat4 u_view;
     uniform mat4 u_model;
@@ -85,7 +87,7 @@ cube_vertices := [][2]glm.vec3 {
     {{-0.5, -0.5,  0.5}, {0, 0,  1}},
     {{ 0.5, -0.5,  0.5}, {0, 0,  1}},
     {{ 0.5,  0.5,  0.5}, {0, 0,  1}},
-    {{-0.5,  0.5,  0.5}, {0, 0,  1}}
+    {{-0.5,  0.5,  0.5}, {0, 0,  1}},
 }
 
 cube_indices := []u16 {
@@ -94,7 +96,7 @@ cube_indices := []u16 {
      8,  9, 10,   8, 10, 11,
     12, 13, 14,  12, 14, 15,
     16, 17, 18,  16, 18, 19,
-    20, 21, 22,  20, 22, 23
+    20, 21, 22,  20, 22, 23,
 }
 
 index_count := len(cube_indices)
@@ -180,18 +182,18 @@ main :: proc() {
 
         for sdl.PollEvent(&event) {
             #partial switch event.type {
-                case .QUIT:
-                    break loop
-                case .WINDOW_RESIZED:
-                    sdl.GetWindowSize(window, &viewport_x, &viewport_y)
-                case .KEY_DOWN:
-                    if event.key.scancode == sdl.Scancode.ESCAPE {
-                        _ = sdl.SetWindowRelativeMouseMode(window, !sdl.GetWindowRelativeMouseMode(window))
-                    }
-                case .MOUSE_MOTION:
-                    if sdl.GetWindowRelativeMouseMode(window) {
-                        rotate_camera(&camera, event.motion.xrel * yaw_speed, event.motion.yrel * pitch_speed, 0)
-                    }
+            case .QUIT:
+                break loop
+            case .WINDOW_RESIZED:
+                sdl.GetWindowSize(window, &viewport_x, &viewport_y)
+            case .KEY_DOWN:
+                if event.key.scancode == sdl.Scancode.ESCAPE {
+                    _ = sdl.SetWindowRelativeMouseMode(window, !sdl.GetWindowRelativeMouseMode(window))
+                }
+            case .MOUSE_MOTION:
+                if sdl.GetWindowRelativeMouseMode(window) {
+                    rotate_camera(&camera, event.motion.xrel * yaw_speed, event.motion.yrel * pitch_speed, 0)
+                }
             }
         }
 

@@ -74,6 +74,7 @@ VERTEX_SOURCE :: `#version 460 core
 
     out vec2 v_tex_coord;
     out vec4 v_color;
+
     uniform mat4 u_projection;
 
     const vec2 positions[] = vec2[](
@@ -213,10 +214,10 @@ main :: proc() {
 
         for sdl.PollEvent(&event) {
             #partial switch event.type {
-                case .QUIT:
-                    break loop
-                case .WINDOW_RESIZED:
-                    sdl.GetWindowSize(window, &viewport_x, &viewport_y)
+            case .QUIT:
+                break loop
+            case .WINDOW_RESIZED:
+                sdl.GetWindowSize(window, &viewport_x, &viewport_y)
             }
         }
 

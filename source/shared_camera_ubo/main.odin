@@ -23,6 +23,7 @@ SPHERE_RADIUS_MAX : f32 : 16
 CUBE_VERTEX_SOURCE :: `#version 460 core
     layout(location = 0) in vec3 i_position;
     layout(location = 1) in vec3 i_normal;
+
     out vec3 v_normal;
     out vec3 v_world_pos;
 
@@ -48,6 +49,7 @@ CUBE_VERTEX_SOURCE :: `#version 460 core
 CUBE_FRAGMENT_SOURCE :: `#version 460 core
     in vec3 v_normal;
     in vec3 v_world_pos;
+
     out vec4 o_frag_color;
 
     layout(std140, binding = 0) uniform Camera {
@@ -78,6 +80,7 @@ SPHERES_VERTEX_SOURCE :: `#version 460 core
     layout(location = 0) in vec3 i_position;
     layout(location = 1) in float i_radius;
     layout(location = 2) in int i_color;
+
     out vec4 v_color;
     out vec3 v_frag_vs;
     flat out vec3 v_center_vs;
@@ -133,6 +136,7 @@ SPHERES_FRAGMENT_SOURCE :: `#version 460 core
     in vec3 v_frag_vs;
     flat in vec3 v_center_vs;
     flat in float v_radius;
+
     out vec4 o_frag_color;
 
     layout(std140, binding = 0) uniform Camera {
@@ -181,17 +185,17 @@ SPHERES_FRAGMENT_SOURCE :: `#version 460 core
 
 Camera_UBO :: struct {
     projection: glm.mat4,
-    view:       glm.mat4,
-    view_pos:   glm.vec3,
-    _pad0:      f32,
-    light_dir:  glm.vec3,
-    ambient:    f32,
+    view: glm.mat4,
+    view_pos: glm.vec3,
+    _pad0: f32,
+    light_dir: glm.vec3,
+    ambient: f32,
 }
 
 Sphere :: struct {
     position: glm.vec3,
-    radius:   f32,
-    color:    i32,
+    radius: f32,
+    color: i32,
 }
 
 pack_color :: proc(color: glm.ivec3) -> i32 {
@@ -377,18 +381,18 @@ main :: proc() {
 
         for sdl.PollEvent(&event) {
             #partial switch event.type {
-                case .QUIT:
-                    break loop
-                case .WINDOW_RESIZED:
-                    sdl.GetWindowSize(window, &viewport_x, &viewport_y)
-                case .KEY_DOWN:
-                    if event.key.scancode == sdl.Scancode.ESCAPE {
-                        _ = sdl.SetWindowRelativeMouseMode(window, !sdl.GetWindowRelativeMouseMode(window))
-                    }
-                case .MOUSE_MOTION:
-                    if sdl.GetWindowRelativeMouseMode(window) {
-                        rotate_camera(&camera, event.motion.xrel * yaw_speed, event.motion.yrel * pitch_speed, 0)
-                    }
+            case .QUIT:
+                break loop
+            case .WINDOW_RESIZED:
+                sdl.GetWindowSize(window, &viewport_x, &viewport_y)
+            case .KEY_DOWN:
+                if event.key.scancode == sdl.Scancode.ESCAPE {
+                    _ = sdl.SetWindowRelativeMouseMode(window, !sdl.GetWindowRelativeMouseMode(window))
+                }
+            case .MOUSE_MOTION:
+                if sdl.GetWindowRelativeMouseMode(window) {
+                    rotate_camera(&camera, event.motion.xrel * yaw_speed, event.motion.yrel * pitch_speed, 0)
+                }
             }
         }
 

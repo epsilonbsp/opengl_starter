@@ -16,9 +16,11 @@ VERTEX_SOURCE :: `#version 460 core
     layout(location = 0) in vec2 i_position;
     layout(location = 1) in float i_radius;
     layout(location = 2) in int i_color;
+
     flat out float v_radius;
     out vec4 v_color;
     out vec2 v_tex_coord;
+
     uniform mat4 u_projection;
 
     const vec2 positions[] = vec2[](
@@ -57,6 +59,7 @@ FRAGMENT_SOURCE :: `#version 460 core
     flat in float v_radius;
     in vec4 v_color;
     in vec2 v_tex_coord;
+
     out vec4 o_frag_color;
 
     void main() {
@@ -79,7 +82,7 @@ POINT_RADIUS_MAX : f32 : 16
 Point :: struct {
     position: glm.vec2,
     radius: f32,
-    color: i32
+    color: i32,
 }
 
 pack_color :: proc(color: glm.ivec3) -> i32 {
@@ -167,10 +170,10 @@ main :: proc() {
 
         for sdl.PollEvent(&event) {
             #partial switch event.type {
-                case .QUIT:
-                    break loop
-                case .WINDOW_RESIZED:
-                    sdl.GetWindowSize(window, &viewport_x, &viewport_y)
+            case .QUIT:
+                break loop
+            case .WINDOW_RESIZED:
+                sdl.GetWindowSize(window, &viewport_x, &viewport_y)
             }
         }
 

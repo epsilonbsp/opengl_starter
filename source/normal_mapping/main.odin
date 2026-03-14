@@ -17,9 +17,11 @@ VERTEX_SOURCE :: `#version 460 core
     layout(location = 1) in vec3 i_normal;
     layout(location = 2) in vec2 i_uv;
     layout(location = 3) in vec3 i_tangent;
+
     out vec2 v_uv;
     out vec3 v_world_pos;
     out mat3 v_tbn;
+
     uniform mat4 u_projection;
     uniform mat4 u_view;
     uniform mat4 u_model;
@@ -43,7 +45,9 @@ FRAGMENT_SOURCE :: `#version 460 core
     in vec2 v_uv;
     in vec3 v_world_pos;
     in mat3 v_tbn;
+
     out vec4 o_frag_color;
+
     uniform sampler2D u_color_tex;
     uniform sampler2D u_normal_tex;
     uniform vec3 u_light_dir;
@@ -241,18 +245,18 @@ main :: proc() {
         event: sdl.Event
         for sdl.PollEvent(&event) {
             #partial switch event.type {
-                case .QUIT:
-                    break loop
-                case .WINDOW_RESIZED:
-                    sdl.GetWindowSize(window, &viewport_x, &viewport_y)
-                case .KEY_DOWN:
-                    if event.key.scancode == sdl.Scancode.ESCAPE {
-                        _ = sdl.SetWindowRelativeMouseMode(window, !sdl.GetWindowRelativeMouseMode(window))
-                    }
-                case .MOUSE_MOTION:
-                    if sdl.GetWindowRelativeMouseMode(window) {
-                        rotate_camera(&camera, event.motion.xrel * yaw_speed, event.motion.yrel * pitch_speed, 0)
-                    }
+            case .QUIT:
+                break loop
+            case .WINDOW_RESIZED:
+                sdl.GetWindowSize(window, &viewport_x, &viewport_y)
+            case .KEY_DOWN:
+                if event.key.scancode == sdl.Scancode.ESCAPE {
+                    _ = sdl.SetWindowRelativeMouseMode(window, !sdl.GetWindowRelativeMouseMode(window))
+                }
+            case .MOUSE_MOTION:
+                if sdl.GetWindowRelativeMouseMode(window) {
+                    rotate_camera(&camera, event.motion.xrel * yaw_speed, event.motion.yrel * pitch_speed, 0)
+                }
             }
         }
 

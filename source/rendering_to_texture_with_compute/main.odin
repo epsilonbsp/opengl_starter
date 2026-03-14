@@ -18,6 +18,7 @@ TEXTURE_HEIGHT :: 512
 TEXTURE_COMPUTE_SOURCE :: `#version 460 core
     layout(local_size_x = 16, local_size_y = 16) in;
     layout(rgba8, binding = 0) uniform writeonly image2D u_output;
+
     uniform float u_time;
 
     const vec3 COLOR_OUTSIDE = vec3(0.53, 0.81, 0.92);
@@ -69,6 +70,7 @@ TEXTURE_COMPUTE_SOURCE :: `#version 460 core
 // Output pass: samples the compute texture and draws it on a centered quad
 OUTPUT_VERTEX_SOURCE :: `#version 460 core
     out vec2 v_tex_coord;
+
     uniform mat4 u_projection;
 
     const vec2 quad_size = vec2(512.0);
@@ -96,7 +98,9 @@ OUTPUT_VERTEX_SOURCE :: `#version 460 core
 
 OUTPUT_FRAGMENT_SOURCE :: `#version 460 core
     in vec2 v_tex_coord;
+
     out vec4 o_frag_color;
+
     uniform sampler2D u_texture;
 
     void main() {
@@ -166,10 +170,10 @@ main :: proc() {
 
         for sdl.PollEvent(&event) {
             #partial switch event.type {
-                case .QUIT:
-                    break loop
-                case .WINDOW_RESIZED:
-                    sdl.GetWindowSize(window, &viewport_x, &viewport_y)
+            case .QUIT:
+                break loop
+            case .WINDOW_RESIZED:
+                sdl.GetWindowSize(window, &viewport_x, &viewport_y)
             }
         }
 

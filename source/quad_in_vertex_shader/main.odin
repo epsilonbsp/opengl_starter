@@ -14,6 +14,7 @@ GL_VERSION_MINOR :: 6
 VERTEX_SOURCE :: `#version 460 core
     out vec2 v_tex_coord;
     out vec4 v_color;
+
     uniform mat4 u_projection;
 
     const vec2 quad_size = vec2(256.0);
@@ -51,6 +52,7 @@ VERTEX_SOURCE :: `#version 460 core
 FRAGMENT_SOURCE :: `#version 460 core
     in vec2 v_tex_coord;
     in vec4 v_color;
+
     out vec4 o_frag_color;
 
     void main() {
@@ -106,10 +108,10 @@ main :: proc() {
 
         for sdl.PollEvent(&event) {
             #partial switch event.type {
-                case .QUIT:
-                    break loop
-                case .WINDOW_RESIZED:
-                    sdl.GetWindowSize(window, &viewport_x, &viewport_y)
+            case .QUIT:
+                break loop
+            case .WINDOW_RESIZED:
+                sdl.GetWindowSize(window, &viewport_x, &viewport_y)
             }
         }
 

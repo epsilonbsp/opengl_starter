@@ -20,9 +20,9 @@ COMPUTE_SOURCE :: `#version 460 core
 
     // Sobel edge detection kernels
     const float kernel_x[9] = float[](
-        -1.0,  0.0,  1.0,
-        -2.0,  0.0,  2.0,
-        -1.0,  0.0,  1.0
+        -1.0, 0.0, 1.0,
+        -2.0, 0.0, 2.0,
+        -1.0, 0.0, 1.0
     );
 
     const float kernel_y[9] = float[](
@@ -55,6 +55,7 @@ COMPUTE_SOURCE :: `#version 460 core
 // Output pass: draws the processed texture on a centered quad
 OUTPUT_VERTEX_SOURCE :: `#version 460 core
     out vec2 v_tex_coord;
+
     uniform mat4 u_projection;
     uniform vec2 u_offset;
     uniform vec2 u_size;
@@ -81,7 +82,9 @@ OUTPUT_VERTEX_SOURCE :: `#version 460 core
 
 OUTPUT_FRAGMENT_SOURCE :: `#version 460 core
     in vec2 v_tex_coord;
+
     out vec4 o_frag_color;
+
     uniform sampler2D u_texture;
 
     void main() {
@@ -92,6 +95,7 @@ OUTPUT_FRAGMENT_SOURCE :: `#version 460 core
 main :: proc() {
     if !sdl.Init({.VIDEO}) {
         fmt.printf("SDL ERROR: %s\n", sdl.GetError())
+
         return
     }
 
@@ -173,10 +177,10 @@ main :: proc() {
 
         for sdl.PollEvent(&event) {
             #partial switch event.type {
-                case .QUIT:
-                    break loop
-                case .WINDOW_RESIZED:
-                    sdl.GetWindowSize(window, &viewport_x, &viewport_y)
+            case .QUIT:
+                break loop
+            case .WINDOW_RESIZED:
+                sdl.GetWindowSize(window, &viewport_x, &viewport_y)
             }
         }
 
