@@ -91,13 +91,20 @@ SPHERES_VERTEX_SOURCE :: `#version 460 core
         float ambient;
     };
 
-    // Unit cube — sphere of radius r fits inside cube of half-size r,
-    // so the projected cube always covers the sphere silhouette from any angle
     const vec3 cube[14] = vec3[](
+        // back (-Z)
         vec3(-1, 1,-1), vec3( 1, 1,-1), vec3(-1,-1,-1), vec3( 1,-1,-1),
+
+        // right (+X)
         vec3( 1,-1, 1), vec3( 1, 1,-1), vec3( 1, 1, 1),
+
+        // top (+Y)
         vec3(-1, 1,-1), vec3(-1, 1, 1),
+
+        // left (-X)
         vec3(-1,-1,-1), vec3(-1,-1, 1),
+
+        // bottom (-Y) + front (+Z)
         vec3( 1,-1, 1), vec3(-1, 1, 1), vec3( 1, 1, 1)
     );
 
@@ -396,7 +403,7 @@ main :: proc() {
         compute_camera_projection(&camera, f32(viewport_x) / f32(viewport_y))
         compute_camera_view(&camera)
 
-        // Upload once — both programs read from the same UBO
+        // Upload once - both programs read from the same UBO
         camera_data := Camera_UBO{
             projection = camera.projection,
             view       = camera.view,
