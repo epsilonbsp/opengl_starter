@@ -49,6 +49,7 @@ import example "default_window"
 | `normal_mapping` | A textured cube with per-pixel lighting using a normal map, tangent-space TBN matrix computed per vertex, supporting 8-bit and 16-bit PNG textures |
 | `skybox_cubemap` | A skybox rendered using a `GL_TEXTURE_CUBE_MAP` loaded from 6 PNG faces, drawn behind the scene using a translation-stripped view matrix and the `xyww` depth trick |
 | `model_loading` | A GLB model loaded using cgltf, with per-node transforms, mesh deduplication, and Blinn-Phong lighting |
+| `split_screen` | A 4x4x4 grid of cubes rendered with the scissor test splitting the screen: left half shows Blinn-Phong color, right half shows linearized depth — using a shared Camera UBO and instanced rendering with a per-instance `mat4` model matrix |
 
 ## References
 
