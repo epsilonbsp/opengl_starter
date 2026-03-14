@@ -102,7 +102,7 @@ main :: proc() {
     seeds: [VORONOI_SEEDS]Seed
 
     for &s in seeds {
-        s.pos   = {rand.float32_range(0, IMAGE_WIDTH), rand.float32_range(0, IMAGE_HEIGHT)}
+        s.pos = {rand.float32_range(0, IMAGE_WIDTH), rand.float32_range(0, IMAGE_HEIGHT)}
         s.color = {u8(rand.int31() % 256), u8(rand.int31() % 256), u8(rand.int31() % 256)}
     }
 
@@ -120,7 +120,7 @@ main :: proc() {
 
                 if d < best_dist {
                     best_dist = d
-                    nearest   = i
+                    nearest = i
                 }
             }
 

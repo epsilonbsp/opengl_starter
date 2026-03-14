@@ -31,9 +31,9 @@ VERTEX_SOURCE :: `#version 460 core
         v_uv = i_uv;
 
         mat3 normal_mat = mat3(transpose(inverse(u_model)));
-        vec3 normal   = normalize(normal_mat * i_normal);
-        vec3 tangent  = normalize(normal_mat * i_tangent);
-        tangent       = normalize(tangent - dot(tangent, normal) * normal); // Gram-Schmidt re-orthogonalize
+        vec3 normal = normalize(normal_mat * i_normal);
+        vec3 tangent = normalize(normal_mat * i_tangent);
+        tangent = normalize(tangent - dot(tangent, normal) * normal); // Gram-Schmidt re-orthogonalize
         vec3 bitangent = cross(normal, tangent);
         v_tbn = mat3(tangent, bitangent, normal);
     }

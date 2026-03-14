@@ -47,8 +47,8 @@ FRAGMENT_SOURCE :: `#version 460 core
 
         float diffuse = max(dot(normal, u_light_dir), 0.0);
 
-        vec3 view_dir  = normalize(u_view_pos - v_world_pos);
-        vec3 half_dir  = normalize(u_light_dir + view_dir);
+        vec3 view_dir = normalize(u_view_pos - v_world_pos);
+        vec3 half_dir = normalize(u_light_dir + view_dir);
         float specular = pow(max(dot(normal, half_dir), 0.0), SHININESS) * 0.5;
 
         o_frag_color = vec4(color * (AMBIENT + diffuse) + specular, 1.0);

@@ -238,7 +238,7 @@ upload_node :: proc(node: ^gltf.node, models: ^[dynamic]Model, meshes: ^[dynamic
         }
 
         append(models, Model{
-            mesh      = mesh_index,
+            mesh = mesh_index,
             transform = transmute(glm.mat4)world,
         })
     }

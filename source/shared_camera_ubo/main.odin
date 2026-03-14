@@ -66,8 +66,8 @@ CUBE_FRAGMENT_SOURCE :: `#version 460 core
 
         float diffuse = max(dot(normal, light_dir), 0.0);
 
-        vec3 view_dir  = normalize(view_pos - v_world_pos);
-        vec3 half_dir  = normalize(light_dir + view_dir);
+        vec3 view_dir = normalize(view_pos - v_world_pos);
+        vec3 half_dir = normalize(light_dir + view_dir);
         float specular = pow(max(dot(normal, half_dir), 0.0), SHININESS) * 0.5;
 
         o_frag_color = vec4(color * (ambient + diffuse) + specular, 1.0);
@@ -150,29 +150,29 @@ SPHERES_FRAGMENT_SOURCE :: `#version 460 core
         vec3 ray_dir = normalize(v_frag_vs);
 
         // Ray-sphere intersection: t^2 - 2bt + (|c|^2 - r^2) = 0
-        float b    = dot(ray_dir, v_center_vs);
+        float b = dot(ray_dir, v_center_vs);
         float disc = b * b - dot(v_center_vs, v_center_vs) + v_radius * v_radius;
 
         if (disc < 0.0) {
             discard;
         }
 
-        float t      = b - sqrt(disc);
-        vec3  hit_vs = t * ray_dir;
+        float t = b - sqrt(disc);
+        vec3 hit_vs = t * ray_dir;
 
         // True sphere surface normal at hit point (view space → world space)
         mat3 cam_to_world = transpose(mat3(view));
-        vec3 normal   = cam_to_world * normalize(hit_vs - v_center_vs);
+        vec3 normal = cam_to_world * normalize(hit_vs - v_center_vs);
         vec3 view_dir = cam_to_world * normalize(-hit_vs);
 
         // Correct depth from actual sphere surface
         vec4 clip_pos = projection * vec4(hit_vs, 1.0);
-        gl_FragDepth  = (clip_pos.z / clip_pos.w) * 0.5 + 0.5;
+        gl_FragDepth = (clip_pos.z / clip_pos.w) * 0.5 + 0.5;
 
-        vec3 light    = normalize(light_dir);
+        vec3 light = normalize(light_dir);
         vec3 half_dir = normalize(light + view_dir);
 
-        float diffuse  = max(dot(normal, light), 0.0);
+        float diffuse = max(dot(normal, light), 0.0);
         float specular = pow(max(dot(normal, half_dir), 0.0), SHININESS) * 0.5;
 
         o_frag_color = vec4(v_color.rgb * (ambient + diffuse) + specular, 1.0);
@@ -406,10 +406,10 @@ main :: proc() {
         // Upload once - both programs read from the same UBO
         camera_data := Camera_UBO{
             projection = camera.projection,
-            view       = camera.view,
-            view_pos   = camera.position,
-            light_dir  = light_dir,
-            ambient    = 0.2,
+            view = camera.view,
+            view_pos = camera.position,
+            light_dir = light_dir,
+            ambient = 0.2,
         }
         gl.BindBuffer(gl.UNIFORM_BUFFER, ubo)
         gl.BufferSubData(gl.UNIFORM_BUFFER, 0, size_of(Camera_UBO), &camera_data)

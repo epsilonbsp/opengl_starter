@@ -25,13 +25,13 @@ GEOMETRY_SOURCE :: `#version 460 core
     layout(triangle_strip, max_vertices = 30) out;
     out vec4 v_color;
 
-    uniform mat4  u_projection;
+    uniform mat4 u_projection;
     uniform float u_time;
 
-    const int   POINT_COUNT  = 5;
+    const int POINT_COUNT = 5;
     const float OUTER_RADIUS = 200.0;
     const float INNER_RADIUS = 80.0;
-    const float TAU          = 6.28318530;
+    const float TAU = 6.28318530;
 
     void emit(vec2 center, vec2 offset) {
         gl_Position = u_projection * vec4(center + offset, 0.0, 1.0);
@@ -42,12 +42,12 @@ GEOMETRY_SOURCE :: `#version 460 core
         vec2 center = gl_in[0].gl_Position.xy;
 
         for (int i = 0; i < POINT_COUNT; i++) {
-            float t_outer      = TAU * float(i) / float(POINT_COUNT) - TAU / 4.0 + u_time;
-            float t_inner      = t_outer + TAU / float(2 * POINT_COUNT);
+            float t_outer = TAU * float(i) / float(POINT_COUNT) - TAU / 4.0 + u_time;
+            float t_inner = t_outer + TAU / float(2 * POINT_COUNT);
             float t_outer_next = TAU * float(i + 1) / float(POINT_COUNT) - TAU / 4.0 + u_time;
 
-            vec2 outer      = vec2(cos(t_outer),      sin(t_outer))      * OUTER_RADIUS;
-            vec2 inner      = vec2(cos(t_inner),      sin(t_inner))      * INNER_RADIUS;
+            vec2 outer = vec2(cos(t_outer),      sin(t_outer))      * OUTER_RADIUS;
+            vec2 inner = vec2(cos(t_inner),      sin(t_inner))      * INNER_RADIUS;
             vec2 outer_next = vec2(cos(t_outer_next), sin(t_outer_next)) * OUTER_RADIUS;
 
             v_color = vec4(1.0, 0.85, 0.1, 1.0);

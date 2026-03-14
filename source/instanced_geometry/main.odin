@@ -143,12 +143,12 @@ main :: proc() {
     instances: [INSTANCE_CAP]Instance
 
     for &inst in instances {
-        pos   := glm.vec2{rand.float32_range(INSTANCE_POS_MIN, INSTANCE_POS_MAX), rand.float32_range(INSTANCE_POS_MIN, INSTANCE_POS_MAX)}
+        pos := glm.vec2{rand.float32_range(INSTANCE_POS_MIN, INSTANCE_POS_MAX), rand.float32_range(INSTANCE_POS_MIN, INSTANCE_POS_MAX)}
         angle := rand.float32_range(0, math.TAU)
-        size  := rand.float32_range(INSTANCE_SCALE_MIN, INSTANCE_SCALE_MAX)
+        size := rand.float32_range(INSTANCE_SCALE_MIN, INSTANCE_SCALE_MAX)
 
         inst.transform = make_transform(pos, angle, size)
-        inst.color     = random_color()
+        inst.color = random_color()
     }
 
     // Create vertex array

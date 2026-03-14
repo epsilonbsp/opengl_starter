@@ -15,7 +15,7 @@ GL_VERSION_MINOR :: 6
 // Compute pass: reads input texture, applies Gaussian blur kernel, writes to output texture
 COMPUTE_SOURCE :: `#version 460 core
     layout(local_size_x = 16, local_size_y = 16) in;
-    layout(rgba8, binding = 0) uniform readonly  image2D u_input;
+    layout(rgba8, binding = 0) uniform readonly image2D u_input;
     layout(rgba8, binding = 1) uniform writeonly image2D u_output;
 
     // Sobel edge detection kernels
@@ -33,7 +33,7 @@ COMPUTE_SOURCE :: `#version 460 core
 
     void main() {
         ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
-        ivec2 size  = imageSize(u_input);
+        ivec2 size = imageSize(u_input);
 
         vec4 gx = vec4(0.0);
         vec4 gy = vec4(0.0);
@@ -140,7 +140,7 @@ main :: proc() {
     data := #load("texture.png")
     image, _ := png.load_from_bytes(data, {.alpha_add_if_missing}); defer png.destroy(image)
 
-    image_width  := i32(image.width)
+    image_width := i32(image.width)
     image_height := i32(image.height)
 
     // Input texture - loaded from image, read-only in compute
@@ -187,7 +187,7 @@ main :: proc() {
         gl.Clear(gl.COLOR_BUFFER_BIT)
 
         size := glm.vec2(512)
-        gap  := size.x / 2
+        gap := size.x / 2
 
         gl.UseProgram(output_program)
         gl.UniformMatrix4fv(output_uniforms["u_projection"].location, 1, false, &projection[0][0])

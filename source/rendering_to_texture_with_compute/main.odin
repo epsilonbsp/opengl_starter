@@ -20,13 +20,13 @@ TEXTURE_COMPUTE_SOURCE :: `#version 460 core
     layout(rgba8, binding = 0) uniform writeonly image2D u_output;
     uniform float u_time;
 
-    const vec3  COLOR_OUTSIDE   = vec3(0.53, 0.81, 0.92);
-    const vec3  COLOR_INSIDE    = vec3(0.85, 0.10, 0.15);
+    const vec3 COLOR_OUTSIDE = vec3(0.53, 0.81, 0.92);
+    const vec3 COLOR_INSIDE = vec3(0.85, 0.10, 0.15);
     const float PULSE_AMPLITUDE = 0.1;
-    const float PULSE_SPEED     = 4.0;
-    const float FALLOFF_SHARP   = 6.0;
-    const float RIPPLE_FREQ     = 320.0;
-    const float EDGE_SOFTNESS   = 0.01;
+    const float PULSE_SPEED = 4.0;
+    const float FALLOFF_SHARP = 6.0;
+    const float RIPPLE_FREQ = 320.0;
+    const float EDGE_SOFTNESS = 0.01;
 
     float dot2(vec2 v) {
         return dot(v, v);
@@ -49,10 +49,10 @@ TEXTURE_COMPUTE_SOURCE :: `#version 460 core
 
     void main() {
         ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
-        ivec2 size  = imageSize(u_output);
+        ivec2 size = imageSize(u_output);
 
         vec2 uv = (vec2(coord) + 0.5) / vec2(size);
-        vec2 p  = 2.0 * uv - 1.0;
+        vec2 p = 2.0 * uv - 1.0;
 
         float scale = 1.0 + PULSE_AMPLITUDE * sin(u_time * PULSE_SPEED);
         float d = sd_heart(p / scale);
@@ -60,7 +60,7 @@ TEXTURE_COMPUTE_SOURCE :: `#version 460 core
         vec3 col = (d > 0.0) ? COLOR_OUTSIDE : COLOR_INSIDE;
         col *= 1.0 - exp(-FALLOFF_SHARP * abs(d));
         col *= 0.8 + 0.2 * cos(RIPPLE_FREQ * d);
-        col  = mix(col, vec3(1.0), 1.0 - smoothstep(0.0, EDGE_SOFTNESS, abs(d)));
+        col = mix(col, vec3(1.0), 1.0 - smoothstep(0.0, EDGE_SOFTNESS, abs(d)));
 
         imageStore(u_output, coord, vec4(col, 1.0));
     }

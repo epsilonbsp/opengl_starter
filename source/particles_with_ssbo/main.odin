@@ -25,10 +25,10 @@ COMPUTE_SOURCE :: `#version 460 core
     layout(local_size_x = 64) in;
 
     struct Particle {
-        vec2  position;
-        vec2  velocity;
+        vec2 position;
+        vec2 velocity;
         float radius;
-        int   color;
+        int color;
     };
 
     layout(std430, binding = 0) buffer ParticleBuffer {
@@ -36,7 +36,7 @@ COMPUTE_SOURCE :: `#version 460 core
     };
 
     uniform float u_delta_time;
-    uniform vec2  u_bounds;
+    uniform vec2 u_bounds;
 
     void main() {
         uint i = gl_GlobalInvocationID.x;
@@ -62,10 +62,10 @@ COMPUTE_SOURCE :: `#version 460 core
 // Vertex shader: reads per-instance data from SSBO using gl_InstanceID instead of vertex attribs
 VERTEX_SOURCE :: `#version 460 core
     struct Particle {
-        vec2  position;
-        vec2  velocity;
+        vec2 position;
+        vec2 velocity;
         float radius;
-        int   color;
+        int color;
     };
 
     layout(std430, binding = 0) readonly buffer ParticleBuffer {
@@ -220,11 +220,11 @@ main :: proc() {
             }
         }
 
-        ticks      := sdl.GetTicks()
+        ticks := sdl.GetTicks()
         delta_time := f32(ticks - prev_ticks) / 1000.0
-        prev_ticks  = ticks
+        prev_ticks = ticks
 
-        bounds     := glm.vec2{f32(viewport_x) / 2, f32(viewport_y) / 2}
+        bounds := glm.vec2{f32(viewport_x) / 2, f32(viewport_y) / 2}
         projection := glm.mat4Ortho3d(-bounds.x, bounds.x, -bounds.y, bounds.y, -1, 1)
 
         // Compute pass - update all particle positions in SSBO
