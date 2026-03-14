@@ -48,3 +48,11 @@ import example "default_window"
 | `shared_camera_ubo` | A lit cube and 1024 shaded sphere impostors rendered in a shared 3D scene using a UBO to supply camera matrices to both programs |
 | `normal_mapping` | A textured cube with per-pixel lighting using a normal map, tangent-space TBN matrix computed per vertex, supporting 8-bit and 16-bit PNG textures |
 | `skybox_cubemap` | A skybox rendered using a `GL_TEXTURE_CUBE_MAP` loaded from 6 PNG faces, drawn behind the scene using a translation-stripped view matrix and the `xyww` depth trick |
+
+## References
+
+```
+Assets:
+    https://ambientcg.com/
+    https://freestylized.com/
+```
